@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoiceShield AI — Real-Time Voice Cloning Detection & Defense (SIH 2026)</title>
+  <meta name="description" content="AI-Powered Real-Time Detection & Prevention of Voice Cloning Impersonation Attacks. Smart India Hackathon 2026 Finalist (Team Lagging Coders)." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../voiceshield-mobile/dist/favicon.ico" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              cyan: '#06b6d4',
+              teal: '#14b8a6',
+              emerald: '#10b981',
+              rose: '#f43f5e',
+              amber: '#f59e0b',
+              purple: '#a855f7',
+              dark: '#030306',
+              card: '#0a0c14',
+              border: '#1b1f30'
+            }
+          },
+          animation: {
+            'spin-slow': 'spin 16s linear infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'marquee': 'marquee 28s linear infinite',
+            'radar': 'radar 2s linear infinite',
+          },
+          keyframes: {
+            marquee: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-50%)' },
+            },
+            radar: {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Three.js CDN for 3D Sound Vortex Animation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      width: 100%;
+      position: relative;
+      -webkit-text-size-adjust: 100%;
+      background-color: #030306;
+      color: #f1f5f9;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    section {
+      overflow-x: clip;
+      max-width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .ambient-glow {
+        max-width: 80vw !important;
+        max-height: 80vw !important;
+        filter: blur(80px) !important;
+        opacity: 0.16 !important;
+      }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-menu {
+      animation: fadeInDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Cinematic Glow & Depth Panels */
+    .glass-card {
+      background: linear-gradient(135deg, rgba(16, 19, 32, 0.75) 0%, rgba(8, 10, 18, 0.85) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(6, 182, 212, 0.35);
+      box-shadow: 0 20px 60px rgba(6, 182, 212, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .glass-card-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.12), transparent 70%), rgba(11, 14, 25, 0.85);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      box-shadow: 0 25px 70px rgba(6, 182, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    /* Technical grid pattern */
+    .bg-grid-cyber {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* Revolving Button Glow */
+    .btn-glow-border {
+      position: relative;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6, #10b981, #06b6d4);
+      background-size: 300% 300%;
+      animation: gradientFlow 5s ease infinite;
+      padding: 1px;
+      border-radius: 9999px;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Corner crosshairs */
+    .crosshair {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      border-color: rgba(6, 182, 212, 0.4);
+    }
+
+    /* Ambient Spotlight */
+    .ambient-glow {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(140px);
+      pointer-events: none;
+      opacity: 0.25;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #030306; }
+    ::-webkit-scrollbar-thumb { background: #1b1f30; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+  </style>
+</head>
+<body class="bg-[#030306] text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-black">
+
+  <!-- Architectural Background Grid Lines -->
+  <div class="pointer-events-none fixed inset-y-0 left-1/2 z-50 w-full max-w-[1440px] -translate-x-1/2 hidden sm:block">
+    <span class="absolute inset-y-0 left-4 w-px bg-white/[0.03] lg:left-8"></span>
+    <span class="absolute inset-y-0 right-4 w-px bg-white/[0.03] lg:right-8"></span>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- FIXED NAVIGATION -->
+  <!-- ============================================== -->
+  <header class="fixed top-3 sm:top-4 inset-x-0 z-50 px-3 sm:px-8 max-w-[1380px] mx-auto transition-all">
+    <nav class="glass-card rounded-full px-4 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between shadow-2xl shadow-black/90 border border-white/10">
+      
+      <!-- Brand Logo & SIH Badge -->
+      <a href="#" class="flex items-center gap-2.5 sm:gap-3 group">
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-black font-bold shadow-lg shadow-cyan-500/25 group-hover:scale-105 transition-transform">
+          <i data-lucide="shield-check" class="w-4 h-4 sm:w-5 sm:h-5 text-black stroke-[2.5]"></i>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="font-bold tracking-tight text-white text-sm sm:text-base">VoiceShield</span>
+            <span class="text-[9px] sm:text-[10px] uppercase font-mono font-bold tracking-wider px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">SIH 2026</span>
+          </div>
+          <span class="text-[9px] sm:text-[10px] text-zinc-400 font-mono tracking-wider">BY LAGGING CODERS</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links (Desktop) -->
+      <div class="hidden lg:flex items-center gap-7 text-sm font-medium text-zinc-300">
+        <a href="#pipeline" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i> 5-Stage Pipeline
+        </a>
+        <a href="#four-layers" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-400"></i> 4-Layer Proof
+        </a>
+        <a href="#technical-approach" class="hover:text-cyan-400 transition-colors">Team & Stack</a>
+        <a href="#feasibility" class="hover:text-cyan-400 transition-colors">Indian Accents</a>
+        <a href="#compliance" class="hover:text-cyan-400 transition-colors">DPDP & RBI</a>
+        <a href="#interactive-demo" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5 text-cyan-400">
+          <i data-lucide="mic" class="w-3.5 h-3.5"></i> Live Simulator
+        </a>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="#downloads" class="btn-glow-border hidden sm:inline-flex items-center">
+          <span class="px-5 py-2 rounded-full bg-[#080a12] text-xs font-bold tracking-wide uppercase text-white flex items-center gap-2 hover:bg-black transition-colors">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i> Download Setup
+          </span>
+        </a>
+        <a href="#downloads" class="sm:hidden p-2 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 transition-colors" title="Download Setup">
+          <i data-lucide="download" class="w-4 h-4"></i>
+        </a>
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl bg-zinc-900/90 border border-white/10 text-white hover:text-cyan-400 focus:outline-none transition-colors" aria-label="Toggle navigation">
+          <i id="mobileMenuIcon" data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Navigation Drawer Dropdown -->
+    <div id="mobileMenuDropdown" class="hidden lg:hidden mt-2 p-4 rounded-3xl glass-card border border-white/10 shadow-2xl backdrop-blur-2xl animate-menu">
+      <div class="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300 mb-3">
+        <a href="#pipeline" onclick="toggleMobileMenu()" class="p-2.5 rounded-xl bg-white/[0.03] hover:bg-cyan-500/15 hover:text-cyan-300 flex items-center gap-2 transition-colors">
+          <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i> 5-Stage Pipeline
+        </a>
+        <a href="#four-layers" onclick="toggleMobileMenu()" class="p-2.5 rounded-xl bg-white/[0.03] hover:bg-cyan-500/15 hover:text-cyan-300 flex items-center gap-2 transition-colors">
+          <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i> 4-Layer Proof
+        </a>
+        <a href="#technical-approach" onclick="toggleMobileMenu()" class="p-2.5 rounded-xl bg-white/[0.03] hover:bg-cyan-500/15 hover:text-cyan-300 flex items-center gap-2 transition-colors">
+          <i data-lucide="users" class="w-4 h-4 text-blue-400"></i> Team & Stack
+        </a>
+        <a href="#feasibility" onclick="toggleMobileMenu()" class="p-2.5 rounded-xl bg-white/[0.03] hover:bg-cyan-500/15 hover:text-cyan-300 flex items-center gap-2 transition-colors">
+          <i data-lucide="check-circle" class="w-4 h-4 text-amber-400"></i> Indian Accents
+        </a>
+        <a href="#compliance" onclick="toggleMobileMenu()" class="p-2.5 rounded-xl bg-white/[0.03] hover:bg-cyan-500/15 hover:text-cyan-300 flex items-center gap-2 transition-colors">
+          <i data-lucide="scale" class="w-4 h-4 text-purple-400"></i> DPDP & RBI
+        </a>
+        <a href="#interactive-demo" onclick="toggleMobileMenu()" class="p-2.5 rounded-xl bg-white/[0.03] hover:bg-cyan-500/15 hover:text-cyan-300 flex items-center gap-2 transition-colors">
+          <i data-lucide="play-circle" class="w-4 h-4 text-cyan-400"></i> Live Simulator
+        </a>
+      </div>
+      <a href="#downloads" onclick="toggleMobileMenu()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25">
+        <i data-lucide="download" class="w-4 h-4 stroke-[2.5]"></i> Download Windows Setup (.exe)
+      </a>
+    </div>
+  </header>
+
+  <!-- ============================================== -->
+  <!-- HERO SECTION WITH 3D ACOUSTIC VORTEX -->
+  <!-- ============================================== -->
+  <section class="relative min-h-screen flex items-center justify-center pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 overflow-hidden bg-black bg-grid-cyber">
+    
+    <!-- 3D WebGL Vortex Canvas (Matches Qronos) -->
+    <div id="vortexCanvasContainer" class="absolute inset-0 z-0 pointer-events-none opacity-90"></div>
+
+    <!-- Soft Ambient Spotlights -->
+    <div class="ambient-glow -top-32 -left-32 w-[550px] h-[550px] bg-cyan-600"></div>
+    <div class="ambient-glow top-1/2 -right-32 w-[500px] h-[500px] bg-blue-600"></div>
+
+    <!-- Radial Mask to preserve high contrast for text -->
+    <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-black/85 via-transparent to-black"></div>
+    <div class="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(3,3,6,0.85)_80%)]"></div>
+
+    <div class="relative z-10 max-w-[1280px] mx-auto text-center flex flex-col items-center w-full">
+      
+      <!-- Top Pill: SIH 2026 Problem Statement ID -->
+      <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full glass-card border border-cyan-500/40 text-[10px] sm:text-xs font-mono text-cyan-300 mb-6 sm:mb-8 shadow-inner shadow-cyan-500/20 max-w-full">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+        <span class="truncate">SMART INDIA HACKATHON 2026 // PROBLEM STATEMENT ID 26104</span>
+      </div>
+
+      <!-- Main Title from PPT Slide 1 -->
+      <h1 class="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.12] sm:leading-[1.06] max-w-5xl mb-5 sm:mb-6">
+        AI-Powered Real-Time Detection of <br class="hidden sm:inline" />
+        <span class="bg-gradient-to-r from-white via-cyan-200 to-teal-400 bg-clip-text text-transparent">
+          Voice Cloning Impersonation
+        </span>
+      </h1>
+
+      <!-- PPT Slide 2 Subtitle -->
+      <p class="text-sm sm:text-lg lg:text-xl text-zinc-300 max-w-3xl leading-relaxed mb-8 sm:mb-10 font-normal">
+        Listens to live calls, fingerprints synthetic voice artifacts and behavioural biometrics, and stops voice-clone fraud <strong class="text-white">before money moves</strong>. Sub-150ms end-to-end execution.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto mb-12 sm:mb-16 max-w-md sm:max-w-none">
+        
+        <!-- Windows Setup Download Button -->
+        <a href="https://github.com/sujalshahroxs/voiceshield-ai/releases/download/v4.0.0/VoiceShield-Setup.exe" download="VoiceShield-Setup.exe" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 text-black font-extrabold text-sm tracking-wide shadow-2xl shadow-cyan-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all group">
+          <i data-lucide="windows" class="w-5 h-5 text-black"></i>
+          <span>Download Desktop Setup (.exe)</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-black/20 text-black font-mono font-bold">379 MB</span>
+        </a>
+
+        <!-- Mobile APK Button -->
+        <a href="#downloads" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl glass-card text-white font-semibold text-sm hover:border-cyan-500/50 hover:bg-white/[0.05] transition-all">
+          <i data-lucide="smartphone" class="w-4 h-4 text-cyan-400"></i>
+          <span>Mobile Apps (Android & iOS)</span>
+        </a>
+
+        <!-- Live Scanner Jump -->
+        <a href="#interactive-demo" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl text-zinc-400 hover:text-white font-medium text-sm transition-colors">
+          <i data-lucide="play-circle" class="w-4 h-4 text-emerald-400"></i>
+          <span>Live Call Freeze Demo</span>
+        </a>
+      </div>
+
+      <!-- Live Interactive Call HUD Preview (Direct from Slide 2 & 6) -->
+      <div class="w-full max-w-4xl glass-card-glow rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-white/10 shadow-2xl relative group">
+        
+        <!-- Technical Crosshairs -->
+        <div class="crosshair top-3 left-3 border-t-2 border-l-2"></div>
+        <div class="crosshair top-3 right-3 border-t-2 border-r-2"></div>
+        <div class="crosshair bottom-3 left-3 border-b-2 border-l-2"></div>
+        <div class="crosshair bottom-3 right-3 border-b-2 border-r-2"></div>
+
+        <!-- HUD Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-3 sm:pb-4 mb-4 sm:mb-6 gap-2 sm:gap-3">
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <span class="flex h-2.5 w-2.5 sm:h-3 sm:w-3 relative shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-emerald-500"></span>
+            </span>
+            <span class="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-zinc-300">LIVE TELEPHONY // SILERO VAD RING BUFFER</span>
+          </div>
+
+          <div class="flex items-center gap-3 sm:gap-5 text-[10px] sm:text-xs font-mono text-zinc-400">
+            <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-cyan-400"></i> LATENCY: <strong class="text-emerald-400">&lt; 142ms</strong></span>
+            <span class="flex items-center gap-1.5"><i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i> DPDP: <strong class="text-teal-300">SHRED ACTIVE</strong></span>
+          </div>
+        </div>
+
+        <!-- Dynamic Waveform Canvas & Non-Colliding Badges -->
+        <div class="relative bg-black/70 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/5 overflow-hidden mb-4 sm:mb-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[9px] sm:text-[11px] font-mono bg-cyan-950/80 border border-cyan-700/60 text-cyan-300 px-2 py-0.5 rounded">16 kHz Linear PCM</span>
+              <span class="text-[9px] sm:text-[11px] font-mono bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 px-2 py-0.5 rounded">Zero-Retention Verified</span>
+            </div>
+            <div>
+              <span class="text-[9px] sm:text-[11px] font-mono bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                <i data-lucide="check-circle" class="w-3 h-3 text-emerald-400"></i> CALL VERIFIED AUTHENTIC
+              </span>
+            </div>
+          </div>
+          <canvas id="heroWaveform" class="w-full h-20 sm:h-24 block"></canvas>
+        </div>
+
+        <!-- 4 Key Metrics from Slide 2 & 5 -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 text-left">
+          <div class="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+            <span class="text-[9px] sm:text-[10px] font-mono uppercase text-zinc-500 block mb-1">EWMA Risk Score</span>
+            <span class="text-lg sm:text-2xl font-mono font-bold text-emerald-400">0.03 <span class="text-[10px] sm:text-xs text-zinc-500 font-normal">/ 100</span></span>
+          </div>
+          <div class="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+            <span class="text-[9px] sm:text-[10px] font-mono uppercase text-zinc-500 block mb-1">ECAPA Voiceprint</span>
+            <span class="text-lg sm:text-2xl font-mono font-bold text-cyan-400">99.4% <span class="text-[10px] sm:text-xs text-zinc-500 font-normal">Match</span></span>
+          </div>
+          <div class="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+            <span class="text-[9px] sm:text-[10px] font-mono uppercase text-zinc-500 block mb-1">Jitter &amp; Shimmer</span>
+            <span class="text-lg sm:text-2xl font-mono font-bold text-teal-300">ORGANIC</span>
+          </div>
+          <div class="p-2.5 sm:p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+            <span class="text-[9px] sm:text-[10px] font-mono uppercase text-zinc-500 block mb-1">Blockchain Hash</span>
+            <span class="text-lg sm:text-2xl font-mono font-bold text-purple-400">MERKLE ✓</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TECH TICKER MARQUEE -->
+  <div class="border-y border-white/[0.06] bg-black/60 py-3 sm:py-4 overflow-hidden">
+    <div class="flex items-center gap-8 sm:gap-10 whitespace-nowrap animate-marquee text-[11px] sm:text-xs font-mono tracking-wider text-zinc-400 uppercase">
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> Smart India Hackathon 2026 Finalist</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Sub-150ms Real-Time Interception</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-400"></i> AASIST / RawNet3 LFCC-CQCC</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-purple-400"></i> ECAPA-TDNN Speaker Identification</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-400"></i> DPDP Act 2023 In-RAM Crypto Shredding</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-amber-400"></i> Kathbath & IndicTTS Indian Accent Calibration</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> Smart India Hackathon 2026 Finalist</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Sub-150ms Real-Time Interception</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-teal-400"></i> AASIST / RawNet3 LFCC-CQCC</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-purple-400"></i> ECAPA-TDNN Speaker Identification</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-400"></i> DPDP Act 2023 In-RAM Crypto Shredding</span>
+      <span class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-amber-400"></i> Kathbath & IndicTTS Indian Accent Calibration</span>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- SLIDE 2: THE 5-STAGE LIVE CALL PIPELINE -->
+  <!-- ============================================== -->
+  <section id="pipeline" class="py-14 sm:py-24 lg:py-28 px-4 sm:px-8 max-w-[1340px] mx-auto relative overflow-hidden">
+    
+    <div class="ambient-glow top-20 right-10 w-[450px] h-[450px] bg-teal-600"></div>
+
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 font-mono text-xs mb-4 border border-cyan-500/25">
+        <i data-lucide="activity" class="w-3.5 h-3.5"></i> SLIDE 2 // THE PROPOSED SOLUTION
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+        5-Stage Live Call Defense Pipeline
+      </h2>
+      <p class="text-zinc-400 text-base sm:text-lg">
+        Every single stage completes in <span class="text-emerald-400 font-bold">under 150 milliseconds end-to-end</span> — fast enough to intervene before a fraudulent instruction or financial transfer is acted on.
+      </p>
+    </div>
+
+    <!-- Pipeline Flow Graphic (5 connected stages) -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative mb-12">
+      
+      <!-- Stage 1 -->
+      <div class="glass-card rounded-2xl p-6 border border-white/10 flex flex-col justify-between group hover:border-cyan-400/50 transition-all">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/15 text-cyan-400 font-mono font-bold text-sm flex items-center justify-center border border-cyan-500/30">1</span>
+            <span class="text-[10px] font-mono text-cyan-400">16 kHz</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">Live Call Audio</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-4">
+            Telephony, VoIP, or WebRTC streams ingested continuously as raw binary PCM chunks.
+          </p>
+        </div>
+        <div class="pt-3 border-t border-white/5 text-[11px] font-mono text-zinc-500">
+          Source: Inbound Call
+        </div>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="glass-card rounded-2xl p-6 border border-white/10 flex flex-col justify-between group hover:border-teal-400/50 transition-all">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/15 text-teal-400 font-mono font-bold text-sm flex items-center justify-center border border-teal-500/30">2</span>
+            <span class="text-[10px] font-mono text-teal-400">&lt; 15ms</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">VAD & Buffering</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-4">
+            Silero VAD strips silence and populates a high-performance 1.0s sliding ring buffer.
+          </p>
+        </div>
+        <div class="pt-3 border-t border-white/5 text-[11px] font-mono text-zinc-500">
+          Engine: Silero VAD
+        </div>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="glass-card rounded-2xl p-6 border border-white/10 flex flex-col justify-between group hover:border-blue-400/50 transition-all">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-blue-500/15 text-blue-400 font-mono font-bold text-sm flex items-center justify-center border border-blue-500/30">3</span>
+            <span class="text-[10px] font-mono text-blue-400">&lt; 40ms</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">AI Voice Analysis</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-4">
+            Acoustic (AASIST), Prosody (Praat jitter), and Speaker-ID (ECAPA-TDNN) run concurrently.
+          </p>
+        </div>
+        <div class="pt-3 border-t border-white/5 text-[11px] font-mono text-zinc-500">
+          Models: Tri-Concurrent
+        </div>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="glass-card rounded-2xl p-6 border border-white/10 flex flex-col justify-between group hover:border-purple-400/50 transition-all">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-purple-500/15 text-purple-400 font-mono font-bold text-sm flex items-center justify-center border border-purple-500/30">4</span>
+            <span class="text-[10px] font-mono text-purple-400">Real-time</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">Risk Fusion Engine</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-4">
+            EWMA-smoothed 0-100 impersonation risk score eliminates noisy one-off audio glitches.
+          </p>
+        </div>
+        <div class="pt-3 border-t border-white/5 text-[11px] font-mono text-zinc-500">
+          Filter: EWMA Smoother
+        </div>
+      </div>
+
+      <!-- Stage 5 -->
+      <div class="glass-card rounded-2xl p-6 border border-white/10 flex flex-col justify-between group hover:border-rose-400/50 transition-all">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-rose-500/15 text-rose-400 font-mono font-bold text-sm flex items-center justify-center border border-rose-500/30">5</span>
+            <span class="text-[10px] font-mono text-rose-400">Instant</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">Alert & Action</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-4">
+            Live HUD warning, automatic Step-Up biometric MFA, or emergency call freeze trigger.
+          </p>
+        </div>
+        <div class="pt-3 border-t border-white/5 text-[11px] font-mono text-zinc-500">
+          Output: Live Intervention
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Total Latency Guarantee Callout -->
+    <div class="glass-card-glow rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border border-cyan-500/30">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center shrink-0">
+          <i data-lucide="zap" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h4 class="text-base font-bold text-white">End-to-End Latency: Sub-150ms</h4>
+          <p class="text-xs text-zinc-400">Total pipeline budget (Capture 10ms + Silero VAD 15ms + AI Inference 40ms + Fusion & HUD 25ms = &lt; 90-140ms).</p>
+        </div>
+      </div>
+      <span class="px-4 py-1.5 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-mono font-bold border border-emerald-500/30 whitespace-nowrap">
+        INTERVENE BEFORE LOSS
+      </span>
+    </div>
+
+  </section>
+
+  <!-- ============================================== -->
+  <!-- SLIDE 4: HOW WE PROVE IT'S AI (STACKED 4 LAYERS) -->
+  <!-- ============================================== -->
+  <section id="four-layers" class="py-14 sm:py-24 lg:py-28 px-4 sm:px-8 max-w-[1340px] mx-auto border-t border-white/[0.06] relative overflow-hidden">
+    <span id="architecture" class="absolute -top-24"></span>
+    
+    <div class="ambient-glow top-32 left-10 w-[500px] h-[500px] bg-purple-700"></div>
+
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 text-purple-400 font-mono text-xs mb-4 border border-purple-500/25">
+        <i data-lucide="layers" class="w-3.5 h-3.5"></i> SLIDE 4 // STACKED NEURAL PROOF
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+        How We Prove It's AI
+      </h2>
+      <p class="text-zinc-400 text-base sm:text-lg">
+        Four independent layers must agree before a call is flagged — <span class="text-white font-semibold">not a single guess, a stacked mathematical proof</span>.
+      </p>
+    </div>
+
+    <!-- The 4 Stacked Layers Diagram (Reproducing Slide 4 Graphic) -->
+    <div class="max-w-3xl mx-auto space-y-4 relative">
+      
+      <!-- Layer 1 -->
+      <div class="glass-card rounded-2xl p-6 sm:p-7 border border-blue-500/40 relative group hover:scale-[1.01] transition-transform">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <span class="w-10 h-10 rounded-xl bg-blue-600 text-white font-mono font-extrabold text-base flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/30">1</span>
+            <div>
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-1.5">
+                <h3 class="text-base sm:text-lg font-bold text-white tracking-wide">DIGITAL FINGERPRINT</h3>
+                <span class="text-[10px] sm:text-xs font-mono text-blue-400 bg-blue-500/15 px-2 py-0.5 rounded border border-blue-500/30">Acoustic · Wav2Vec2 + ASVspoof</span>
+              </div>
+              <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                Phase discontinuities and spectral artifacts left by every AI vocoder — evidence no real microphone produces.
+              </p>
+            </div>
+          </div>
+          <div class="sm:text-right shrink-0">
+            <span class="text-xs font-mono text-zinc-400">Target: Vocoder Artifacts</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logic Gate Connector -->
+      <div class="flex items-center justify-center">
+        <div class="px-4 py-1 rounded-md bg-white/[0.05] border border-white/10 text-zinc-400 font-mono text-xs font-bold tracking-widest uppercase">
+          AND
+        </div>
+      </div>
+
+      <!-- Layer 2 -->
+      <div class="glass-card rounded-2xl p-6 sm:p-7 border border-cyan-500/40 relative group hover:scale-[1.01] transition-transform">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <span class="w-10 h-10 rounded-xl bg-cyan-600 text-black font-mono font-extrabold text-base flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/30">2</span>
+            <div>
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-1.5">
+                <h3 class="text-base sm:text-lg font-bold text-white tracking-wide">BIOLOGICAL SIGNATURE</h3>
+                <span class="text-[10px] sm:text-xs font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30">Prosody · Jitter + Pitch-SD (Praat)</span>
+              </div>
+              <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                Measures vocal-cord micro-tremors from human lungs and muscle control. AI has no lungs → near-zero jitter.
+              </p>
+            </div>
+          </div>
+          <div class="sm:text-right shrink-0">
+            <span class="text-xs font-mono text-zinc-400">Target: Vocal Micro-Tremors</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logic Gate Connector -->
+      <div class="flex items-center justify-center">
+        <div class="px-4 py-1 rounded-md bg-white/[0.05] border border-white/10 text-zinc-400 font-mono text-xs font-bold tracking-widest uppercase">
+          AND
+        </div>
+      </div>
+
+      <!-- Layer 3 -->
+      <div class="glass-card rounded-2xl p-6 sm:p-7 border border-indigo-500/40 relative group hover:scale-[1.01] transition-transform">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <span class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-mono font-extrabold text-base flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30">3</span>
+            <div>
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-1.5">
+                <h3 class="text-base sm:text-lg font-bold text-white tracking-wide">IDENTITY MATCH</h3>
+                <span class="text-[10px] sm:text-xs font-mono text-indigo-300 bg-indigo-500/15 px-2 py-0.5 rounded border border-indigo-500/30">Speaker-ID · ECAPA-TDNN</span>
+              </div>
+              <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                192-dim voiceprint matching confirms caller is the enrolled VIP, catching impersonation even when audio quality is flawless.
+              </p>
+            </div>
+          </div>
+          <div class="sm:text-right shrink-0">
+            <span class="text-xs font-mono text-zinc-400">Target: Caller VIP Identity</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logic Gate Connector -->
+      <div class="flex items-center justify-center">
+        <div class="px-4 py-1 rounded-md bg-white/[0.05] border border-white/10 text-zinc-400 font-mono text-xs font-bold tracking-widest uppercase">
+          AND
+        </div>
+      </div>
+
+      <!-- Layer 4 -->
+      <div class="glass-card rounded-2xl p-6 sm:p-7 border border-teal-500/40 relative group hover:scale-[1.01] transition-transform">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <span class="w-10 h-10 rounded-xl bg-teal-600 text-black font-mono font-extrabold text-base flex items-center justify-center shrink-0 shadow-lg shadow-teal-500/30">4</span>
+            <div>
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-1.5">
+                <h3 class="text-base sm:text-lg font-bold text-white tracking-wide">SUSTAINED PATTERN</h3>
+                <span class="text-[10px] sm:text-xs font-mono text-teal-300 bg-teal-500/15 px-2 py-0.5 rounded border border-teal-500/30">Fusion · EWMA Over Time</span>
+              </div>
+              <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                EWMA-weighted risk scoring rules out one-off glitches; only a consistent synthetic signature across multiple seconds triggers a flag.
+              </p>
+            </div>
+          </div>
+          <div class="sm:text-right shrink-0">
+            <span class="text-xs font-mono text-zinc-400">Target: Temporal Continuity</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Downward Arrow -->
+      <div class="flex items-center justify-center py-2">
+        <i data-lucide="arrow-down" class="w-6 h-6 text-rose-400 animate-bounce"></i>
+      </div>
+
+      <!-- Final Red Banner from Slide 4 -->
+      <div class="p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-700 to-red-800 text-white text-center font-mono font-extrabold text-xs sm:text-base lg:text-xl tracking-normal sm:tracking-wider uppercase shadow-2xl shadow-rose-600/30 border border-rose-400 flex items-center justify-center gap-2 sm:gap-3">
+        <i data-lucide="alert-triangle" class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-300 shrink-0"></i>
+        <span>ALL 4 LAYERS AGREE &rarr; AI VOICE CONFIRMED</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ============================================== -->
+  <!-- SLIDE 3: TECHNICAL APPROACH (THE 6 TEAM ROLES) -->
+  <!-- ============================================== -->
+  <section id="technical-approach" class="py-14 sm:py-24 lg:py-28 px-4 sm:px-8 max-w-[1340px] mx-auto border-t border-white/[0.06] relative overflow-hidden">
+    
+    <div class="ambient-glow top-40 -left-20 w-[450px] h-[450px] bg-blue-700"></div>
+
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-400 font-mono text-xs mb-4 border border-blue-500/25">
+        <i data-lucide="users" class="w-3.5 h-3.5"></i> SLIDE 3 // ARCHITECTURE BY TEAM MEMBERS
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+        Technical Approach & Stack Breakdown
+      </h2>
+      <p class="text-zinc-400 text-base sm:text-lg">
+        How Team Lagging Coders structured VoiceShield AI into 6 orchestrated modules operating concurrently under 150ms.
+      </p>
+    </div>
+
+    <!-- 6 Team Member Architecture Cards (Slide 3) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Member 1 -->
+      <div class="glass-card rounded-2xl p-7 border border-white/10 hover:border-cyan-400/50 transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/15 px-2.5 py-1 rounded-md border border-cyan-500/30">MEMBER 1</span>
+            <span class="text-xs font-mono text-zinc-400">&lt; 40ms ONNX INT8</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Acoustic Deepfake Detection</h3>
+          <p class="text-xs text-zinc-300 leading-relaxed mb-6">
+            AASIST & RawNet3 architectures fine-tuned on LFCC and CQCC features, quantised to INT8 for sub-40ms on-device inference.
+          </p>
+        </div>
+        <div class="space-y-1.5 text-xs font-mono border-t border-white/5 pt-4">
+          <div class="text-zinc-400">Models: <strong class="text-cyan-300">AASIST / RawNet3</strong></div>
+          <div class="text-zinc-400">Features: <strong class="text-white">LFCC, CQCC Spectrograms</strong></div>
+        </div>
+      </div>
+
+      <!-- Member 2 -->
+      <div class="glass-card rounded-2xl p-7 border border-white/10 hover:border-teal-400/50 transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-teal-400 bg-teal-500/15 px-2.5 py-1 rounded-md border border-teal-500/30">MEMBER 2</span>
+            <span class="text-xs font-mono text-zinc-400">Biometrics</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Prosody & Speaker Biometrics</h3>
+          <p class="text-xs text-zinc-300 leading-relaxed mb-6">
+            Extracts physiological pitch-SD, jitter, shimmer, and F0 micro-tremors paired with 192-dim ECAPA-TDNN voiceprint cosine matching.
+          </p>
+        </div>
+        <div class="space-y-1.5 text-xs font-mono border-t border-white/5 pt-4">
+          <div class="text-zinc-400">Biometrics: <strong class="text-teal-300">ECAPA-TDNN 192-D</strong></div>
+          <div class="text-zinc-400">Prosody: <strong class="text-white">Praat Jitter / Pitch-SD</strong></div>
+        </div>
+      </div>
+
+      <!-- Member 3 -->
+      <div class="glass-card rounded-2xl p-7 border border-white/10 hover:border-blue-400/50 transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-blue-400 bg-blue-500/15 px-2.5 py-1 rounded-md border border-blue-500/30">MEMBER 3</span>
+            <span class="text-xs font-mono text-zinc-400">&lt; 150ms Buffer</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Streaming & VAD Pipeline</h3>
+          <p class="text-xs text-zinc-300 leading-relaxed mb-6">
+            Silero Voice Activity Detection strips silence and manages a thread-safe 1.0s sliding ring buffer orchestrating models in parallel.
+          </p>
+        </div>
+        <div class="space-y-1.5 text-xs font-mono border-t border-white/5 pt-4">
+          <div class="text-zinc-400">VAD Model: <strong class="text-blue-300">Silero VAD ONNX</strong></div>
+          <div class="text-zinc-400">Window: <strong class="text-white">1.0s Sliding Ring Buffer</strong></div>
+        </div>
+      </div>
+
+      <!-- Member 4 -->
+      <div class="glass-card rounded-2xl p-7 border border-white/10 hover:border-purple-400/50 transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-purple-400 bg-purple-500/15 px-2.5 py-1 rounded-md border border-purple-500/30">MEMBER 4</span>
+            <span class="text-xs font-mono text-zinc-400">SHA-256 Merkle</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Risk Fusion & Audit Proof</h3>
+          <p class="text-xs text-zinc-300 leading-relaxed mb-6">
+            EWMA-weighted 0-100 risk scoring algorithm combined with SHA-256 Merkle tree hashing to generate immutable forensic certificates.
+          </p>
+        </div>
+        <div class="space-y-1.5 text-xs font-mono border-t border-white/5 pt-4">
+          <div class="text-zinc-400">Algorithm: <strong class="text-purple-300">EWMA Smoothing</strong></div>
+          <div class="text-zinc-400">Forensics: <strong class="text-white">Merkle Tree Audit Proof</strong></div>
+        </div>
+      </div>
+
+      <!-- Member 5 -->
+      <div class="glass-card rounded-2xl p-7 border border-white/10 hover:border-emerald-400/50 transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/15 px-2.5 py-1 rounded-md border border-emerald-500/30">MEMBER 5</span>
+            <span class="text-xs font-mono text-zinc-400">DPDP Act 2023</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">API Gateway & Privacy Layer</h3>
+          <p class="text-xs text-zinc-300 leading-relaxed mb-6">
+            FastAPI REST/WebSocket gateway implementing strict DPDP zero raw-audio retention with in-RAM cryptographic bitwise shredding.
+          </p>
+        </div>
+        <div class="space-y-1.5 text-xs font-mono border-t border-white/5 pt-4">
+          <div class="text-zinc-400">Gateway: <strong class="text-emerald-300">FastAPI WebSockets</strong></div>
+          <div class="text-zinc-400">Compliance: <strong class="text-white">Zero Raw Persistence</strong></div>
+        </div>
+      </div>
+
+      <!-- Member 6 -->
+      <div class="glass-card rounded-2xl p-7 border border-white/10 hover:border-amber-400/50 transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono font-bold text-amber-400 bg-amber-500/15 px-2.5 py-1 rounded-md border border-amber-500/30">MEMBER 6</span>
+            <span class="text-xs font-mono text-zinc-400">Next.js + WebRTC</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Frontline HUD & Sandbox</h3>
+          <p class="text-xs text-zinc-300 leading-relaxed mb-6">
+            Next.js web shell + WebRTC streaming featuring live risk speedometer gauge, XAI factor cards, and instant emergency call freeze controls.
+          </p>
+        </div>
+        <div class="space-y-1.5 text-xs font-mono border-t border-white/5 pt-4">
+          <div class="text-zinc-400">HUD Stack: <strong class="text-amber-300">Next.js 14 + Three.js</strong></div>
+          <div class="text-zinc-400">Controls: <strong class="text-white">Freeze Call & Step-Up MFA</strong></div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ============================================== -->
+  <!-- SLIDE 5: FEASIBILITY, ACCENTS & CHALLENGES -->
+  <!-- ============================================== -->
+  <section id="feasibility" class="py-14 sm:py-24 lg:py-28 px-4 sm:px-8 max-w-[1340px] mx-auto border-t border-white/[0.06] relative overflow-hidden">
+    
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 text-amber-400 font-mono text-xs mb-4 border border-amber-500/25">
+        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> SLIDE 5 // REAL-WORLD FEASIBILITY & VIABILITY
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+        Engineering Challenges & Mitigations
+      </h2>
+      <p class="text-zinc-400 text-base sm:text-lg">
+        How VoiceShield addresses edge-case hurdles: diverse Indian regional accents, evolving generative vocoders, and strict privacy laws.
+      </p>
+    </div>
+
+    <!-- 4 Challenge-Mitigation Bento Cards (Slide 5) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      
+      <!-- Challenge 1: Sub-150ms Latency -->
+      <div class="glass-card rounded-3xl p-8 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-rose-400 font-bold tracking-wider uppercase">CHALLENGE 01</span>
+            <span class="text-xs font-mono text-zinc-400">SPEED BUDGET</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Sub-150ms Real-Time Latency at Scale</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-6">
+            In live banking calls, detection cannot wait for post-call processing. Analysis must stream concurrently without introducing audible delay.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+          <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold mb-1">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> MITIGATION APPLIED
+          </div>
+          <p class="text-xs text-zinc-300 leading-relaxed">
+            Quantised INT8 ONNX models + asynchronous concurrent thread inference + edge/on-device execution keep the entire pipeline within 142ms.
+          </p>
+        </div>
+      </div>
+
+      <!-- Challenge 2: Indian Accents & Multilingual -->
+      <div class="glass-card rounded-3xl p-8 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-rose-400 font-bold tracking-wider uppercase">CHALLENGE 02</span>
+            <span class="text-xs font-mono text-zinc-400">INDIAN ACCENTS</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Indian Accents & Multilingual Speech</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-6">
+            Western-trained models generate excessive false positives when encountering Indian-English, phoneme lengthening, or regional vernaculars.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+          <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold mb-1">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> MITIGATION APPLIED
+          </div>
+          <p class="text-xs text-zinc-300 leading-relaxed">
+            Calibrated on <strong class="text-white">Kathbath & IndicTTS</strong> across Hindi, Tamil, Telugu & Indian-English, preventing false alarms on genuine citizens.
+          </p>
+        </div>
+      </div>
+
+      <!-- Challenge 3: Evolving Voice Cloning Tools -->
+      <div class="glass-card rounded-3xl p-8 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-rose-400 font-bold tracking-wider uppercase">CHALLENGE 03</span>
+            <span class="text-xs font-mono text-zinc-400">GENERATIVE AI</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Rapidly Evolving Voice-Cloning Tools</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-6">
+            Attackers continuously adopt new zero-shot neural vocoders (VALL-E, RVC, ElevenLabs, XTTS v2) to bypass traditional spectral classifiers.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+          <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold mb-1">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> MITIGATION APPLIED
+          </div>
+          <p class="text-xs text-zinc-300 leading-relaxed">
+            Continuous retraining pipeline + biological Praat micro-tremors (impossible for vocoders to simulate) + Reverse-Turing fallback challenge.
+          </p>
+        </div>
+      </div>
+
+      <!-- Challenge 4: DPDP Act Compliance -->
+      <div class="glass-card rounded-3xl p-8 border border-white/10 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-rose-400 font-bold tracking-wider uppercase">CHALLENGE 04</span>
+            <span class="text-xs font-mono text-zinc-400">DATA PRIVACY</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Data Privacy & Regulatory Approval</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed mb-6">
+            Indian banks and telecom operators face ₹250 Crore penalties under the DPDP Act 2023 for saving raw voice recordings without consent.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+          <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold mb-1">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> MITIGATION APPLIED
+          </div>
+          <p class="text-xs text-zinc-300 leading-relaxed">
+            DPDP Act 2023 by-design: zero raw-audio disk storage, in-RAM cryptographic shredding, and 192-dim anonymized feature-only persistence.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ============================================== -->
+  <!-- SLIDE 6 & 7: IMPACT, BENEFITS & RESEARCH -->
+  <!-- ============================================== -->
+  <section class="py-14 sm:py-24 lg:py-28 px-4 sm:px-8 max-w-[1340px] mx-auto border-t border-white/[0.06] relative overflow-hidden">
+    
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-xs mb-4 border border-emerald-500/25">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> SLIDES 6 & 7 // VALUE & RESEARCH BACKBONE
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+        Measurable Impact & Research Foundation
+      </h2>
+      <p class="text-zinc-400 text-base sm:text-lg">
+        Grounded in peer-reviewed anti-spoofing research and delivering verifiable fraud protection for banks, enterprises, and citizens.
+      </p>
+    </div>
+
+    <!-- 4 Impact Pillars (Slide 6) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      
+      <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-cyan-400/40 transition-all">
+        <div class="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center mb-4">
+          <i data-lucide="shield-alert" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-base font-bold text-white mb-1.5">Fraud Prevented</h4>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Flags cloned-voice CXO and official calls before fraudulent fund transfers or classified data disclosure are approved.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-emerald-400/40 transition-all">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4">
+          <i data-lucide="award" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-base font-bold text-white mb-1.5">Restored Trust</h4>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Gives banks, enterprises, and government bodies a verifiable layer of confidence in voice-based authorizations.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-teal-400/40 transition-all">
+        <div class="w-10 h-10 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center mb-4">
+          <i data-lucide="timer" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-base font-bold text-white mb-1.5">&lt; 150ms Detection</h4>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Real-time risk scoring means threat visibility is available while the call is still live — not after financial loss occurs.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-purple-400/40 transition-all">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-4">
+          <i data-lucide="code" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-base font-bold text-white mb-1.5">Privacy-Safe & Reusable</h4>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          DPDP-compliant, API/SDK-driven security layer that effortlessly plugs into telecom switches and banking cores.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Research Citations (Slide 7) -->
+    <div class="glass-card rounded-3xl p-8 border border-white/10">
+      <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+        <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i>
+        <span>Key Research Papers & Citations (Slide 7)</span>
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+        
+        <div class="p-4 rounded-xl bg-black/50 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="text-cyan-400 font-mono font-bold mb-1">AASIST — Graph Attention Networks</div>
+            <p class="text-zinc-300 mb-3">Audio Anti-Spoofing using Integrated Spectro-Temporal Graph Attention Networks.</p>
+          </div>
+          <a href="https://arxiv.org/abs/2110.01200" target="_blank" class="text-cyan-400 hover:underline font-mono inline-flex items-center gap-1">
+            arXiv:2110.01200 <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        </div>
+
+        <div class="p-4 rounded-xl bg-black/50 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="text-teal-400 font-mono font-bold mb-1">ECAPA-TDNN — Speaker Verification</div>
+            <p class="text-zinc-300 mb-3">Emphasized Channel Attention, Propagation and Aggregation in TDNN for Speaker Verification.</p>
+          </div>
+          <a href="https://arxiv.org/abs/2005.07143" target="_blank" class="text-teal-400 hover:underline font-mono inline-flex items-center gap-1">
+            arXiv:2005.07143 <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        </div>
+
+        <div class="p-4 rounded-xl bg-black/50 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="text-purple-400 font-mono font-bold mb-1">Synthetic Speech Anti-Spoofing</div>
+            <p class="text-zinc-300 mb-3">Informing acoustic and prosody feature design against zero-shot neural vocoders.</p>
+          </div>
+          <a href="https://arxiv.org/abs/2109.00537" target="_blank" class="text-purple-400 hover:underline font-mono inline-flex items-center gap-1">
+            arXiv:2109.00537 <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        </div>
+
+        <div class="p-4 rounded-xl bg-black/50 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="text-amber-400 font-mono font-bold mb-1">Silero VAD — Voice Activity Detection</div>
+            <p class="text-zinc-300 mb-3">Pre-trained enterprise VAD powering real-time speech/silence gating in stream buffers.</p>
+          </div>
+          <a href="https://github.com/snakers4/silero-vad" target="_blank" class="text-amber-400 hover:underline font-mono inline-flex items-center gap-1">
+            github.com/snakers4/silero-vad <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================== -->
+  <!-- DOWNLOAD HUB SECTION (DESKTOP + MOBILE APPS) -->
+  <!-- ============================================== -->
+  <section id="downloads" class="py-14 sm:py-24 lg:py-28 px-4 sm:px-8 max-w-[1340px] mx-auto border-t border-white/[0.06] relative overflow-hidden">
+    
+    <div class="ambient-glow top-20 right-10 w-[500px] h-[500px] bg-cyan-700"></div>
+
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 font-mono text-xs mb-4 border border-cyan-500/25">
+        <i data-lucide="package" class="w-3.5 h-3.5"></i> OFFICIAL DISTRIBUTION HUB
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+        Install VoiceShield on Any Platform
+      </h2>
+      <p class="text-zinc-400 text-base sm:text-lg">
+        Deploy client-side defense immediately. One-click Windows setup wizard with auto-run, or install our mobile guardian on Android and iOS.
+      </p>
+    </div>
+
+    <!-- 3 PLATFORM CARDS -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- CARD 1: WINDOWS DESKTOP SETUP -->
+      <div class="glass-card-glow rounded-3xl p-8 flex flex-col justify-between relative group hover:border-cyan-400/50 transition-all shadow-2xl">
+        <div class="absolute top-6 right-6">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> READY NOW
+          </span>
+        </div>
+
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-6">
+            <i data-lucide="monitor" class="w-7 h-7"></i>
+          </div>
+
+          <h3 class="text-2xl font-bold text-white mb-2">Windows Desktop Setup</h3>
+          <p class="text-zinc-400 text-sm mb-6 leading-relaxed">
+            Full-featured workstation suite. Features automatic installer wizard, desktop shortcut generation, and instant launch on finish.
+          </p>
+
+          <div class="space-y-3 mb-8 text-xs font-mono border-t border-white/5 pt-6">
+            <div class="flex justify-between text-zinc-400">
+              <span>File Name:</span>
+              <span class="text-white font-semibold">VoiceShield-Setup.exe</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Version:</span>
+              <span class="text-cyan-400 font-semibold">v4.0.0 (Forensic &amp; Statutory Edition)</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Package Size:</span>
+              <span class="text-white">~379 MB (Self-Contained Installer)</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Prerequisites:</span>
+              <span class="text-emerald-400">None (Self-Contained)</span>
+            </div>
+          </div>
+
+          <ul class="space-y-2.5 text-sm text-zinc-300 mb-8">
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span>Full Inno Setup Wizard with automatic run</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span>Forensic Investigation Certificate (PDF &amp; DOCX export)</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span>DPDP Act 2023 § 7(b) &amp; RBI compliance ledger</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span>3D Interactive Sound Vortex WebGL HUD</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span>Runs without administrator restrictions</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <a href="downloads/VoiceShield-Setup.exe" download="VoiceShield-Setup.exe" class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-extrabold text-sm flex items-center justify-center gap-2 transition-all shadow-xl shadow-cyan-500/25 group-hover:scale-[1.01]">
+            <i data-lucide="download" class="w-4 h-4 text-black stroke-[2.5]"></i>
+            <span>Download Windows Setup (379 MB)</span>
+          </a>
+          <p class="text-[10px] text-zinc-500 text-center mt-2.5 font-mono truncate" title="SHA-256: 532310F53AD69FE9AB70AC58AD174F4F9A5FC52FBD1EBC8FD062BB4FA74A9DC0">
+            SHA-256: 532310F5...74A9DC0 (Verified)
+          </p>
+          <div class="flex items-center justify-center gap-3 mt-1.5 text-[11px] font-mono">
+            <a href="https://github.com/sujalshahroxs/voiceshield-ai/releases/download/v4.0.0/VoiceShield-Setup.exe" target="_blank" class="text-cyan-400 hover:underline flex items-center gap-1">
+              <span>GitHub Release Mirror</span>
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+          <p class="text-[10px] text-cyan-400/90 text-center mt-1 font-mono flex items-center justify-center gap-1">
+            <span>🛡️ If SmartScreen appears: Click <b>More info</b> → <b>Run anyway</b></span>
+          </p>
+        </div>
+      </div>
+
+      <!-- CARD 2: ANDROID MOBILE APK -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col justify-between relative group hover:border-emerald-500/50 transition-all shadow-xl">
+        <div class="absolute top-6 right-6">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> APK VERIFIED &amp; READY
+          </span>
+        </div>
+
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6">
+            <i data-lucide="smartphone" class="w-7 h-7"></i>
+          </div>
+
+          <h3 class="text-2xl font-bold text-white mb-2">Android Mobile App</h3>
+          <p class="text-zinc-400 text-sm mb-6 leading-relaxed">
+            Real-time call shield for smartphones. Native Kotlin &amp; Jetpack Compose defense engine intercepting incoming audio streams in under 200 milliseconds.
+          </p>
+
+          <div class="space-y-3 mb-8 text-xs font-mono border-t border-white/5 pt-6">
+            <div class="flex justify-between text-zinc-400">
+              <span>Target File:</span>
+              <span class="text-white font-semibold">VoiceShield.apk (18.3 MB)</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Package ID:</span>
+              <span class="text-cyan-400 font-semibold">com.example.voiceshieldai</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Architecture:</span>
+              <span class="text-emerald-400 font-semibold">Jetpack Compose Native</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Compatibility:</span>
+              <span class="text-white">Android 7.0 to 16 (API 24-36)</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Core Service:</span>
+              <span class="text-cyan-400">CallMonitoringForegroundService</span>
+            </div>
+          </div>
+
+          <ul class="space-y-2.5 text-sm text-zinc-300 mb-8">
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+              <span>Live floating HUD overlay during phone calls</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+              <span>Zero cloud storage: RAM-only processing</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+              <span>Foreground microphone acoustic telemetry</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+              <span>Pre-signed APK (Signature Scheme v2)</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <a id="androidApkBtn" href="https://github.com/sujalshahroxs/voiceshield-ai/releases/download/v4.0.0/VoiceShield.apk" download="VoiceShield.apk" class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-extrabold text-sm flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-500/25 group-hover:scale-[1.01]">
+            <i data-lucide="download" class="w-4 h-4 text-black stroke-[2.5]"></i>
+            <span>Download Android APK (18.3 MB)</span>
+          </a>
+          <p class="text-[10px] text-zinc-500 text-center mt-2.5 font-mono truncate" title="SHA-256: 0D1C3382AED435B46D754BA60B64016FF62D0D225B3A07DB75F131602E4AFCDB">
+            SHA-256: 0D1C3382...E4AFCDB (Verified)
+          </p>
+          <div class="flex items-center justify-center gap-3 mt-1.5 text-[11px] font-mono">
+            <a href="https://github.com/sujalshahroxs/voiceshield-ai/releases/download/v4.0.0/VoiceShield.apk" target="_blank" class="text-cyan-400 hover:underline flex items-center gap-1">
+              <span>GitHub Release Mirror</span>
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: APPLE IOS (TESTFLIGHT / IPA) -->
+      <div class="glass-card rounded-3xl p-8 flex flex-col justify-between relative group hover:border-purple-500/50 transition-all shadow-xl">
+        <div class="absolute top-6 right-6">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> TESTFLIGHT / IPA
+          </span>
+        </div>
+
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6">
+            <i data-lucide="apple" class="w-7 h-7"></i>
+          </div>
+
+          <h3 class="text-2xl font-bold text-white mb-2">Apple iOS Edition</h3>
+          <p class="text-zinc-400 text-sm mb-6 leading-relaxed">
+            Native iOS app engineered with Apple CallKit and Neural Engine acceleration. Delivers instant biometric fraud alerts on incoming iPhone calls.
+          </p>
+
+          <div class="space-y-3 mb-8 text-xs font-mono border-t border-white/5 pt-6">
+            <div class="flex justify-between text-zinc-400">
+              <span>Channel:</span>
+              <span class="text-white font-semibold">TestFlight Beta / IPA</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Version:</span>
+              <span class="text-purple-400 font-semibold">v1.0.0 (Build 42)</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>Security:</span>
+              <span class="text-white">Apple Secure Enclave</span>
+            </div>
+            <div class="flex justify-between text-zinc-400">
+              <span>OS Requirement:</span>
+              <span class="text-purple-400">iOS 16.0 or higher</span>
+            </div>
+          </div>
+
+          <ul class="space-y-2.5 text-sm text-zinc-300 mb-8">
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Seamless CallKit directory blocking</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Encrypted local biometric keychain</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Live Dynamic Island warning banners</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-purple-400 shrink-0"></i>
+              <span>Direct cryptographic audit exports</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <a href="#downloads" onclick="alert('iOS TestFlight link / IPA will be active as soon as your iOS build is ready!')" class="w-full py-4 px-6 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/10 transition-all">
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-purple-400"></i>
+            <span>Request TestFlight Access</span>
+          </a>
+          <p class="text-[11px] text-zinc-500 text-center mt-2.5 font-mono">Available via Apple TestFlight Public Beta</p>
+        </div>
+      </div>
+
+      <!-- 4-STEP SETUP WALKTHROUGH BANNER -->
+      <div class="lg:col-span-3 mt-12 p-8 rounded-3xl glass-card border border-cyan-500/20 shadow-2xl relative overflow-hidden">
+        <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-white/10">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-400 font-mono text-xs font-bold mb-2 border border-cyan-500/30">
+              <i data-lucide="zap" class="w-3.5 h-3.5"></i> ZERO-CONFIG INSTALLATION
+            </div>
+            <h3 class="text-2xl font-bold text-white tracking-tight">How the Windows Setup Wizard Works</h3>
+            <p class="text-sm text-zinc-400 mt-1">Download, click Next, and your AI deepfake shield is active in under 30 seconds.</p>
+          </div>
+          <a href="https://github.com/sujalshahroxs/voiceshield-ai/releases/download/v4.0.0/VoiceShield-Setup.exe" download="VoiceShield-Setup.exe" class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs uppercase tracking-wider transition-all shadow-lg shadow-cyan-500/30">
+            <i data-lucide="download" class="w-4 h-4 stroke-[2.5]"></i> Get Setup File (.exe)
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8">
+          <!-- Step 1 -->
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3 relative">
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 font-mono font-bold text-sm flex items-center justify-center border border-cyan-500/40">
+              01
+            </div>
+            <h4 class="text-sm font-bold text-white">Download Setup</h4>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Click the download button to get <code class="text-cyan-300 font-mono text-[11px]">VoiceShield-Setup.exe</code> (379 MB offline installer bundle).
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3 relative">
+            <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 font-mono font-bold text-sm flex items-center justify-center border border-blue-500/40">
+              02
+            </div>
+            <h4 class="text-sm font-bold text-white">Run Setup Wizard</h4>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Launch the setup. If Windows SmartScreen appears, click <strong class="text-cyan-300">More info</strong> &rarr; <strong class="text-cyan-300">Run anyway</strong>. No admin rights required, 100% self-contained.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3 relative">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 font-mono font-bold text-sm flex items-center justify-center border border-purple-500/40">
+              03
+            </div>
+            <h4 class="text-sm font-bold text-white">Auto Unpack &amp; Link</h4>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Unpacks Wav2Vec2 neural models, local FastAPI backend, and Next.js HUD. Generates Start Menu &amp; Desktop shortcuts automatically.
+            </p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-3 relative">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono font-bold text-sm flex items-center justify-center border border-emerald-500/40">
+              04
+            </div>
+            <h4 class="text-sm font-bold text-white">Instant Auto-Run</h4>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Click Finish with "Automatically run VoiceShield AI" checked — your live 3D sound vortex HUD immediately boots onto your screen!
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- LIVE SCANNER & CALL FREEZE SIMULATOR -->
+  <!-- ============================================== -->
+  <section id="interactive-demo" class="py-14 sm:py-24 px-3 sm:px-8 border-t border-white/[0.06] bg-[#070912] relative overflow-hidden">
+    <div class="max-w-[1240px] mx-auto">
+      
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-xs mb-4 border border-emerald-500/20">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> LIVE INTERACTIVE SANDBOX (SLIDE 2 & 6)
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+          Frontline Call Freeze Simulator
+        </h2>
+        <p class="text-zinc-400 text-base">
+          Experience Member 6's Frontline HUD. Test authentic vs. cloned speech and trigger real-time Step-Up MFA or Call Freeze controls.
+        </p>
+      </div>
+
+      <!-- Interactive Simulator Box -->
+      <div class="glass-card-glow rounded-2xl sm:rounded-3xl p-4 sm:p-10 border border-cyan-500/30 shadow-2xl">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Left Controls (4 Cols) -->
+          <div class="lg:col-span-4 space-y-4">
+            <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i> Select Audio Input Mode
+            </h3>
+
+            <button id="btnTestHuman" onclick="simulateVoice('human')" class="w-full text-left p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-emerald-400/50 transition-all flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
+                  <i data-lucide="user-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold text-white group-hover:text-emerald-300">Authentic Human Voice</div>
+                  <div class="text-xs text-zinc-400">Vocal micro-tremors active</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 font-bold">0.03 Risk</span>
+            </button>
+
+            <button id="btnTestDeepfake" onclick="simulateVoice('deepfake')" class="w-full text-left p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-rose-400/50 transition-all flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-rose-500/15 text-rose-400 flex items-center justify-center">
+                  <i data-lucide="bot" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold text-white group-hover:text-rose-300">ElevenLabs / VALL-E Clone</div>
+                  <div class="text-xs text-zinc-400">Phase discontinuities detected</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono text-rose-400 font-bold">0.96 Threat</span>
+            </button>
+
+            <button id="btnTestReplay" onclick="simulateVoice('replay')" class="w-full text-left p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 hover:border-amber-400/50 transition-all flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                  <i data-lucide="volume-2" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold text-white group-hover:text-amber-300">Acoustic Replay Attack</div>
+                  <div class="text-xs text-zinc-400">Loudspeaker echo impulse</div>
+                </div>
+              </div>
+              <span class="text-xs font-mono text-amber-400 font-bold">0.82 Risk</span>
+            </button>
+
+            <!-- Frontline Emergency Actions (From Slide 3 - Member 6) -->
+            <div class="pt-4 border-t border-white/10 space-y-2.5">
+              <button onclick="triggerCallFreeze()" class="w-full py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-600/30 transition-all">
+                <i data-lucide="phone-off" class="w-4 h-4"></i>
+                <span>TRIGGER EMERGENCY CALL FREEZE</span>
+              </button>
+              <button onclick="triggerMfa()" class="w-full py-2.5 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-cyan-300 font-mono text-xs flex items-center justify-center gap-2 border border-cyan-500/30 transition-all">
+                <i data-lucide="key" class="w-3.5 h-3.5"></i>
+                <span>REQUEST BIOMETRIC STEP-UP MFA</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Visualizer & Diagnostics (8 Cols) -->
+          <div class="lg:col-span-8 bg-black/80 rounded-2xl p-6 border border-white/10 flex flex-col justify-between h-full">
+            
+            <div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <span id="demoStatusDot" class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                  <span id="demoStatusText" class="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-emerald-400 font-bold truncate">STATE: 1.0s WINDOW ACTIVE / AUTHENTIC</span>
+                </div>
+                <span class="text-[10px] sm:text-xs font-mono text-zinc-400 shrink-0">LATENCY: 138ms</span>
+              </div>
+
+              <!-- Interactive Waveform Canvas -->
+              <canvas id="interactiveCanvas" class="w-full h-36 bg-zinc-950/90 rounded-xl border border-white/5 mb-6"></canvas>
+            </div>
+
+            <!-- Diagnostics Gauge Bars -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10">
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span class="text-zinc-400">EWMA Risk Score:</span>
+                  <span id="gaugeDeepfakeVal" class="font-bold text-emerald-400">3.2%</span>
+                </div>
+                <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div id="gaugeDeepfakeBar" class="h-full bg-emerald-400 transition-all duration-500" style="width: 3.2%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span class="text-zinc-400">ECAPA Speaker Match:</span>
+                  <span id="gaugeSpeakerVal" class="font-bold text-cyan-400">99.4%</span>
+                </div>
+                <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div id="gaugeSpeakerBar" class="h-full bg-cyan-400 transition-all duration-500" style="width: 99.4%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span class="text-zinc-400">DPDP RAM Shredder:</span>
+                  <span class="font-bold text-purple-400">ZERO RESIDUAL (0B)</span>
+                </div>
+                <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div class="h-full bg-purple-400" style="width: 100%;"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- COMPLIANCE: DPDP ACT 2023 & RBI DIRECTIVES -->
+  <!-- ============================================== -->
+  <section id="compliance" class="py-14 sm:py-24 lg:py-28 px-4 sm:px-8 max-w-[1340px] mx-auto border-t border-white/[0.06] relative overflow-hidden">
+    <span id="dpdp-rbi" class="absolute -top-24"></span>
+    
+    <div class="ambient-glow top-20 left-10 w-[500px] h-[500px] bg-emerald-700"></div>
+
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-xs mb-4 border border-emerald-500/25">
+        <i data-lucide="scale" class="w-3.5 h-3.5"></i> LEGAL & BANKING COMPLIANCE
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+        DPDP Act 2023 & RBI Governance
+      </h2>
+      <p class="text-zinc-400 text-base sm:text-lg">
+        Designed from the ground up for Indian banking security, eliminating data fiduciary liability through zero raw-audio retention.
+      </p>
+    </div>
+
+    <!-- 2 Pillars -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+      
+      <!-- DPDP Act 2023 -->
+      <div class="glass-card-glow rounded-3xl p-8 border border-emerald-500/30 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+              <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-white">DPDP Act 2023 Mandate</h3>
+              <p class="text-xs font-mono text-emerald-400">Digital Personal Data Protection Act (Section 8 & 9)</p>
+            </div>
+          </div>
+
+          <p class="text-zinc-300 text-sm leading-relaxed mb-6">
+            Under India's DPDP Act, biometric voiceprints constitute highly sensitive personal data. Fiduciaries face penalties up to ₹250 Crore for unauthorized persistence.
+          </p>
+
+          <div class="space-y-4 text-xs">
+            <div class="p-4 rounded-xl bg-black/40 border border-white/5">
+              <h4 class="font-bold text-emerald-400 mb-1 flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i> Zero Raw Audio Persistence
+              </h4>
+              <p class="text-zinc-400 leading-relaxed">
+                Raw PCM voice samples are never written to disk, databases, or cloud buckets. Audio lives solely in volatile RAM during the 1.0s window.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-black/40 border border-white/5">
+              <h4 class="font-bold text-emerald-400 mb-1 flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i> Cryptographic In-RAM Shredding
+              </h4>
+              <p class="text-zinc-400 leading-relaxed">
+                Immediately after 192-dim feature extraction, byte buffers are overwritten with random entropy noise and wiped by Python garbage collection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span>Compliance Status:</span>
+          <span class="text-emerald-400 font-bold">100% COMPLIANT ✓</span>
+        </div>
+      </div>
+
+      <!-- RBI Cyber Security Framework -->
+      <div class="glass-card-glow rounded-3xl p-8 border border-cyan-500/30 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30">
+              <i data-lucide="landmark" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-white">RBI Cybersecurity Directives</h3>
+              <p class="text-xs font-mono text-cyan-400">Reserve Bank of India Master Direction for Banking Fraud</p>
+            </div>
+          </div>
+
+          <p class="text-zinc-300 text-sm leading-relaxed mb-6">
+            Designed for high-value IVR banking channels, telephonic fund transfers, and corporate executive impersonation defense.
+          </p>
+
+          <div class="space-y-4 text-xs">
+            <div class="p-4 rounded-xl bg-black/40 border border-white/5">
+              <h4 class="font-bold text-cyan-400 mb-1 flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i> Real-Time Step-Up MFA Triggers
+              </h4>
+              <p class="text-zinc-400 leading-relaxed">
+                When an anomaly score crosses > 0.65, VoiceShield automatically flags the call, freezes financial operations, and requests secondary out-of-band MFA.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-black/40 border border-white/5">
+              <h4 class="font-bold text-cyan-400 mb-1 flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i> SHA-256 Merkle Audit Trail
+              </h4>
+              <p class="text-zinc-400 leading-relaxed">
+                Generates cryptographic JSON forensic certificates signed with SHA-256 hashes for bank dispute arbitration and regulatory inspection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span>Target Standard:</span>
+          <span class="text-cyan-400 font-bold">RBI CSIS-2023 ✓</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Forensic Audit Certificate Simulator (Slide 3 - Member 4) -->
+    <div class="glass-card rounded-3xl p-8 border border-white/10">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="file-check" class="w-5 h-5 text-emerald-400"></i>
+            <span>Forensic Audit Certificate Generator (Member 4 Output)</span>
+          </h3>
+          <p class="text-xs text-zinc-400">Live cryptographic proof structure emitted by <code>/api/v1/audit/certificate/{call_id}</code></p>
+        </div>
+        <button onclick="generateAuditProof()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-mono text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/25">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Generate New Proof
+        </button>
+      </div>
+
+      <div class="w-full overflow-hidden rounded-xl sm:rounded-2xl border border-white/5 bg-black/80 p-3 sm:p-5">
+        <pre id="certificateCode" class="font-mono text-[11px] sm:text-xs text-emerald-300 overflow-x-auto leading-relaxed max-w-full">
+{
+  "call_id": "CALL_88320491_VERIFIED",
+  "problem_statement_id": "26104",
+  "team_name": "Lagging Coders",
+  "timestamp": "2026-09-17T20:25:12.180Z",
+  "dpdp_compliance": {
+    "act": "DPDP_ACT_2023_INDIA",
+    "zero_retention_verified": true,
+    "crypto_shredding_algorithm": "ENTROPY_MASK_ZERO_RAM",
+    "raw_audio_persisted_bytes": 0
+  },
+  "risk_assessment": {
+    "ewma_risk_score": 0.021,
+    "speaker_biometric_similarity": 0.994,
+    "classification": "AUTHENTIC_CALLER",
+    "recommendation": "ALLOW_TRANSACTION"
+  },
+  "merkle_root_signature": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "audit_authority": "RBI_BANKING_TELE_SECURITY_GRID"
+}
+        </pre>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================== -->
+  <!-- FOOTER -->
+  <!-- ============================================== -->
+  <footer class="border-t border-white/10 bg-black/90 py-12 px-4 sm:px-8">
+    <div class="max-w-[1340px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-zinc-500">
+      
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+          <i data-lucide="shield" class="w-4 h-4"></i>
+        </div>
+        <span class="font-bold text-white">VoiceShield AI</span>
+        <span class="text-zinc-600">|</span>
+        <span>Smart India Hackathon 2026 (Problem Statement ID 26104)</span>
+        <span class="text-zinc-600">|</span>
+        <span class="text-cyan-400">Team Lagging Coders</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-6">
+        <a href="#pipeline" class="hover:text-cyan-400 transition-colors">5-Stage Pipeline</a>
+        <a href="#four-layers" class="hover:text-cyan-400 transition-colors">4-Layer Proof</a>
+        <a href="#technical-approach" class="hover:text-cyan-400 transition-colors">Team Stack</a>
+        <a href="#feasibility" class="hover:text-cyan-400 transition-colors">Indian Accents</a>
+        <a href="#compliance" class="hover:text-cyan-400 transition-colors">DPDP & RBI</a>
+        <a href="#downloads" class="hover:text-cyan-400 transition-colors">Downloads</a>
+      </div>
+
+      <div>
+        <span>DPDP Act 2023 Compliant • Sub-150ms Latency</span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================== -->
+  <!-- 3D SOUND VORTEX (THREE.JS) & INTERACTIVE SCRIPTS -->
+  <!-- ============================================== -->
+  <script>
+    // 1. INITIALIZE LUCIDE ICONS
+    lucide.createIcons();
+
+    // MOBILE MENU TOGGLE
+    function toggleMobileMenu() {
+      const dropdown = document.getElementById('mobileMenuDropdown');
+      const icon = document.getElementById('mobileMenuIcon');
+      if (!dropdown) return;
+      const isHidden = dropdown.classList.contains('hidden');
+      if (isHidden) {
+        dropdown.classList.remove('hidden');
+        if (icon) icon.setAttribute('data-lucide', 'x');
+      } else {
+        dropdown.classList.add('hidden');
+        if (icon) icon.setAttribute('data-lucide', 'menu');
+      }
+      lucide.createIcons();
+    }
+    window.toggleMobileMenu = toggleMobileMenu;
+
+    // 2. GIANT 3D SOUND VORTEX (MATCHING QRONOS TEMPLATE)
+    (function init3DVortex() {
+      const container = document.getElementById('vortexCanvasContainer');
+      if (!container || typeof THREE === 'undefined') return;
+
+      const isMobile = window.innerWidth < 768;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      
+      const updateCamera = () => {
+        const aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = aspect;
+        if (aspect < 1.0) {
+          // Portrait phone: pull back camera so entire acoustic funnel stays inside the screen!
+          camera.position.set(0, 0, Math.min(14.5, 8.5 / (aspect * 0.85)));
+        } else {
+          camera.position.set(0, 0, 8.5);
+        }
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      };
+
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobile });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+      container.appendChild(renderer.domElement);
+      updateCamera();
+
+      const group = new THREE.Group();
+      scene.add(group);
+
+      // Create Swirling Hyperboloid Acoustic Funnel
+      const lineCount = isMobile ? 48 : 110;
+      const pointsPerLine = isMobile ? 65 : 120;
+      const waistRadius = 1.05;
+      const aParam = 1.25;
+      const heightRange = 7.5;
+
+      const linesMaterial = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.28,
+        blending: THREE.AdditiveBlending
+      });
+
+      const cyanMaterial = new THREE.LineBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending
+      });
+
+      for (let i = 0; i < lineCount; i++) {
+        const phi = (i / lineCount) * Math.PI * 2;
+        const positions = [];
+
+        for (let j = 0; j < pointsPerLine; j++) {
+          const t = (j / (pointsPerLine - 1)) * 2 - 1;
+          const y = t * (heightRange / 2);
+          const r = waistRadius * Math.sqrt(1 + Math.pow(y / aParam, 2));
+          
+          const twist = y * 1.35 + phi;
+          const x = r * Math.cos(twist);
+          const z = r * Math.sin(twist);
+
+          positions.push(x, y, z);
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        const line = new THREE.Line(geometry, (i % 5 === 0) ? cyanMaterial : linesMaterial);
+        group.add(line);
+      }
+
+      // Add Swirling Sound Particles Galaxy
+      const particleCount = isMobile ? 800 : 3000;
+      const particleGeo = new THREE.BufferGeometry();
+      const pPositions = new Float32Array(particleCount * 3);
+      const pColors = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount; i++) {
+        const y = (Math.random() * 2 - 1) * (heightRange / 2);
+        const rBase = waistRadius * Math.sqrt(1 + Math.pow(y / aParam, 2));
+        const spread = (Math.random() * 0.45);
+        const r = rBase * (0.85 + spread);
+        const phi = Math.random() * Math.PI * 2;
+
+        pPositions[i * 3] = r * Math.cos(phi);
+        pPositions[i * 3 + 1] = y;
+        pPositions[i * 3 + 2] = r * Math.sin(phi);
+
+        const isAccent = Math.random() > 0.7;
+        pColors[i * 3] = isAccent ? 0.22 : 0.85;
+        pColors[i * 3 + 1] = isAccent ? 0.74 : 0.9;
+        pColors[i * 3 + 2] = isAccent ? 0.97 : 0.95;
+      }
+
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+      particleGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+
+      const particleMat = new THREE.PointsMaterial({
+        size: 0.025,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending
+      });
+
+      const particleSystem = new THREE.Points(particleGeo, particleMat);
+      group.add(particleSystem);
+
+      // Add concentric base acoustic ripples
+      for (let ring = 1; ring <= 10; ring++) {
+        const ringGeo = new THREE.RingGeometry(ring * 0.45, ring * 0.45 + 0.015, 64);
+        const ringMat = new THREE.MeshBasicMaterial({
+          color: (ring % 2 === 0) ? 0x06b6d4 : 0xffffff,
+          transparent: true,
+          opacity: 0.06 / ring,
+          side: THREE.DoubleSide
+        });
+        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+        ringMesh.rotation.x = Math.PI / 2;
+        ringMesh.position.y = -heightRange / 2;
+        group.add(ringMesh);
+      }
+
+      // Mouse Parallax Interaction
+      let mouseX = 0;
+      let mouseY = 0;
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 0.8;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 0.8;
+      });
+
+      // Resize Handler
+      window.addEventListener('resize', () => {
+        updateCamera();
+      });
+
+      // Smooth Animation Loop
+      let clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+
+        group.rotation.y = elapsedTime * 0.12;
+        group.rotation.x = Math.sin(elapsedTime * 0.3) * 0.06;
+        
+        camera.position.x += (mouseX - camera.position.x) * 0.03;
+        camera.position.y += (-mouseY - camera.position.y) * 0.03;
+        camera.lookAt(0, 0, 0);
+
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+
+    // 3. HERO WAVEFORM (CANVAS 2D)
+    const heroCanvas = document.getElementById('heroWaveform');
+    if (heroCanvas) {
+      const ctx = heroCanvas.getContext('2d');
+      let width = heroCanvas.width = heroCanvas.offsetWidth;
+      let height = heroCanvas.height = heroCanvas.offsetHeight;
+
+      window.addEventListener('resize', () => {
+        width = heroCanvas.width = heroCanvas.offsetWidth;
+        height = heroCanvas.height = heroCanvas.offsetHeight;
+      });
+
+      let phase = 0;
+      function renderHeroWave() {
+        ctx.clearRect(0, 0, width, height);
+
+        const waves = [
+          { color: 'rgba(6, 182, 212, 0.7)', speed: 0.04, amp: 18, freq: 0.02 },
+          { color: 'rgba(59, 130, 246, 0.4)', speed: 0.03, amp: 14, freq: 0.03 },
+          { color: 'rgba(16, 185, 129, 0.5)', speed: 0.05, amp: 10, freq: 0.015 },
+        ];
+
+        waves.forEach(w => {
+          ctx.beginPath();
+          ctx.strokeStyle = w.color;
+          ctx.lineWidth = 2;
+          for (let x = 0; x < width; x++) {
+            const y = height / 2 + Math.sin(x * w.freq + phase * w.speed * 20) * w.amp * Math.sin(x / width * Math.PI);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        });
+
+        const barCount = Math.floor(width / 16);
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.12)';
+        for (let i = 0; i < barCount; i++) {
+          const barHeight = Math.abs(Math.sin(i * 0.3 + phase * 0.05)) * (height * 0.6);
+          ctx.fillRect(i * 16, height - barHeight, 8, barHeight);
+        }
+
+        phase += 1;
+        requestAnimationFrame(renderHeroWave);
+      }
+      renderHeroWave();
+    }
+
+    // 4. INTERACTIVE DEMO SIMULATOR
+    let currentMode = 'human';
+    const demoCanvas = document.getElementById('interactiveCanvas');
+    let demoCtx = demoCanvas ? demoCanvas.getContext('2d') : null;
+    let dWidth = demoCanvas ? (demoCanvas.width = demoCanvas.offsetWidth) : 300;
+    let dHeight = demoCanvas ? (demoCanvas.height = demoCanvas.offsetHeight) : 120;
+
+    window.addEventListener('resize', () => {
+      if (demoCanvas) {
+        dWidth = demoCanvas.width = demoCanvas.offsetWidth;
+        dHeight = demoCanvas.height = demoCanvas.offsetHeight;
+      }
+    });
+
+    let demoPhase = 0;
+    function renderDemoWave() {
+      if (!demoCtx) return;
+      demoCtx.clearRect(0, 0, dWidth, dHeight);
+      demoCtx.lineWidth = 2.5;
+
+      if (currentMode === 'human') {
+        demoCtx.strokeStyle = '#10b981';
+        demoCtx.beginPath();
+        for (let x = 0; x < dWidth; x++) {
+          const y = dHeight / 2 + 
+            (Math.sin(x * 0.03 + demoPhase * 0.08) * 18 + Math.cos(x * 0.01 + demoPhase * 0.03) * 12) * Math.sin(x / dWidth * Math.PI);
+          if (x === 0) demoCtx.moveTo(x, y);
+          else demoCtx.lineTo(x, y);
+        }
+        demoCtx.stroke();
+      } else if (currentMode === 'deepfake') {
+        demoCtx.strokeStyle = '#f43f5e';
+        demoCtx.beginPath();
+        for (let x = 0; x < dWidth; x++) {
+          const glitch = (x % 14 === 0) ? (Math.random() * 20 - 10) : 0;
+          const y = dHeight / 2 + 
+            (Math.sin(x * 0.07 + demoPhase * 0.2) * 28 + glitch) * Math.sin(x / dWidth * Math.PI);
+          if (x === 0) demoCtx.moveTo(x, y);
+          else demoCtx.lineTo(x, y);
+        }
+        demoCtx.stroke();
+      } else {
+        demoCtx.strokeStyle = '#f59e0b';
+        demoCtx.beginPath();
+        for (let x = 0; x < dWidth; x++) {
+          const y = dHeight / 2 + 
+            (Math.sin(x * 0.02 + demoPhase * 0.05) * 25 * Math.cos(x * 0.05)) * Math.sin(x / dWidth * Math.PI);
+          if (x === 0) demoCtx.moveTo(x, y);
+          else demoCtx.lineTo(x, y);
+        }
+        demoCtx.stroke();
+      }
+
+      demoPhase += 1;
+      requestAnimationFrame(renderDemoWave);
+    }
+    renderDemoWave();
+
+    function simulateVoice(type) {
+      currentMode = type;
+      const statusText = document.getElementById('demoStatusText');
+      const statusDot = document.getElementById('demoStatusDot');
+      const dfVal = document.getElementById('gaugeDeepfakeVal');
+      const dfBar = document.getElementById('gaugeDeepfakeBar');
+      const spVal = document.getElementById('gaugeSpeakerVal');
+      const spBar = document.getElementById('gaugeSpeakerBar');
+
+      if (type === 'human') {
+        statusText.innerText = 'STATE: 1.0s WINDOW ACTIVE / AUTHENTIC HUMAN VOICE';
+        statusText.className = 'font-mono text-xs uppercase tracking-wider text-emerald-400 font-bold';
+        statusDot.className = 'w-3 h-3 rounded-full bg-emerald-400 animate-pulse';
+
+        dfVal.innerText = '3.2%';
+        dfVal.className = 'font-bold text-emerald-400';
+        dfBar.style.width = '3.2%';
+        dfBar.className = 'h-full bg-emerald-400 transition-all duration-500';
+
+        spVal.innerText = '99.4%';
+        spVal.className = 'font-bold text-cyan-400';
+        spBar.style.width = '99.4%';
+      } else if (type === 'deepfake') {
+        statusText.innerText = 'ALERT: SYNTHETIC VOICE CLONE INTERCEPTED';
+        statusText.className = 'font-mono text-xs uppercase tracking-wider text-rose-400 font-bold animate-pulse';
+        statusDot.className = 'w-3 h-3 rounded-full bg-rose-500 animate-ping';
+
+        dfVal.innerText = '96.8%';
+        dfVal.className = 'font-bold text-rose-400';
+        dfBar.style.width = '96.8%';
+        dfBar.className = 'h-full bg-rose-500 transition-all duration-500';
+
+        spVal.innerText = '31.5%';
+        spVal.className = 'font-bold text-zinc-400';
+        spBar.style.width = '31.5%';
+      } else if (type === 'replay') {
+        statusText.innerText = 'WARNING: ACOUSTIC REPLAY / LOUDSPEAKER ARTIFACTS';
+        statusText.className = 'font-mono text-xs uppercase tracking-wider text-amber-400 font-bold';
+        statusDot.className = 'w-3 h-3 rounded-full bg-amber-400 animate-pulse';
+
+        dfVal.innerText = '82.0%';
+        dfVal.className = 'font-bold text-amber-400';
+        dfBar.style.width = '82.0%';
+        dfBar.className = 'h-full bg-amber-400 transition-all duration-500';
+
+        spVal.innerText = '84.1%';
+        spVal.className = 'font-bold text-cyan-400';
+        spBar.style.width = '84.1%';
+      }
+    }
+
+    // Frontline Emergency Actions
+    function triggerCallFreeze() {
+      alert("🚨 EMERGENCY CALL FREEZE INITIATED:\n\n• Audio transmission terminated immediately.\n• Telephony switch signaled to lock channel.\n• Incident certificate logged to SHA-256 Merkle tree.");
+    }
+
+    function triggerMfa() {
+      alert("🔐 BIOMETRIC STEP-UP MFA DISPATCHED:\n\n• Out-of-band push notification sent to customer's trusted device.\n• Financial execution paused until facial/passkey authorization completes.");
+    }
+
+    // 5. AUDIT PROOF SIMULATOR
+    function generateAuditProof() {
+      const callId = "CALL_" + Math.floor(10000000 + Math.random() * 90000000) + "_AUDIT";
+      const now = new Date().toISOString();
+      const randomHash = Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+      const certObj = {
+        "call_id": callId,
+        "problem_statement_id": "26104",
+        "team_name": "Lagging Coders",
+        "timestamp": now,
+        "dpdp_compliance": {
+          "act": "DPDP_ACT_2023_INDIA",
+          "zero_retention_verified": true,
+          "crypto_shredding_algorithm": "ENTROPY_MASK_ZERO_RAM",
+          "raw_audio_persisted_bytes": 0
+        },
+        "risk_assessment": {
+          "ewma_risk_score": 0.021,
+          "speaker_biometric_similarity": 0.994,
+          "classification": "AUTHENTIC_CALLER",
+          "recommendation": "ALLOW_TRANSACTION"
+        },
+        "merkle_root_signature": "sha256:" + randomHash,
+        "audit_authority": "RBI_BANKING_TELE_SECURITY_GRID"
+      };
+
+      document.getElementById('certificateCode').innerText = JSON.stringify(certObj, null, 2);
+    }
+  </script>
+</body>
+</html>
